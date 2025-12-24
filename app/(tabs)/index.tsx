@@ -22,6 +22,20 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Warehouse Helper</ThemedText>
+        <ThemedText>
+          Use the barcode scanner to quickly scan items in your warehouse. 
+          Tap the Scanner tab below or the button to get started!
+        </ThemedText>
+        <Link href="/(tabs)/scanner" asChild>
+          <ThemedView style={styles.scannerButton}>
+            <ThemedText type="defaultSemiBold" style={styles.scannerButtonText}>
+              📷 Open Scanner
+            </ThemedText>
+          </ThemedView>
+        </Link>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
           Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
@@ -94,5 +108,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  scannerButton: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  scannerButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
 });

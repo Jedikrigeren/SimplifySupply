@@ -1,0 +1,38 @@
+{
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-read --allow-env --allow-write src/main.ts",
+    "start": "deno run --allow-net --allow-read --allow-env --allow-write src/main.ts",
+    "migrate:latest": "deno run --allow-net --allow-read --allow-env --allow-write src/config/migrate.ts",
+    "migrate:rollback": "deno run --allow-net --allow-read --allow-env --allow-write src/config/rollback.ts",
+    "migrate:make": "deno run --allow-net --allow-read --allow-env --allow-write src/config/makeMigration.ts",
+    "seed": "deno run --allow-net --allow-read --allow-env --allow-write src/config/seed.ts"
+  },
+  "imports": {
+    "@hono/hono": "npm:hono@^4.0.0",
+    "@hono/cors": "npm:hono@^4.0.0/cors",
+    "knex": "npm:knex@^3.1.0",
+    "pg": "npm:pg@^8.11.3",
+    "bcrypt": "npm:bcrypt@^5.1.1",
+    "jsonwebtoken": "npm:jsonwebtoken@^9.0.2",
+    "dotenv": "npm:dotenv@^16.3.1",
+    "zod": "npm:zod@^3.22.4"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.window"],
+    "strict": true
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": true,
+    "proseWrap": "preserve"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  }
+}
