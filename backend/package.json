@@ -1,0 +1,7 @@
+{
+  "name": "warehouse-helper-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend API for Warehouse Helper",
+  "private": true
+}

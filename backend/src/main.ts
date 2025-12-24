@@ -1,6 +1,7 @@
 import { cors } from '@hono/cors';
 import { Hono } from '@hono/hono';
 import 'dotenv/config';
+import { authRoutes } from './routes/auth.routes.ts';
 
 const app = new Hono();
 
@@ -23,6 +24,9 @@ app.use('/*', async (c, next) => {
 app.get('/health', (c) => {
   return c.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// Mount auth routes
+app.route('/api/auth', authRoutes);
 
 // API routes will be added here
 app.get('/api', (c) => {

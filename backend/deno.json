@@ -1,11 +1,12 @@
 {
+  "nodeModulesDir": "auto",
   "tasks": {
-    "dev": "deno run --watch --allow-net --allow-read --allow-env --allow-write src/main.ts",
-    "start": "deno run --allow-net --allow-read --allow-env --allow-write src/main.ts",
-    "migrate:latest": "deno run --allow-net --allow-read --allow-env --allow-write src/config/migrate.ts",
-    "migrate:rollback": "deno run --allow-net --allow-read --allow-env --allow-write src/config/rollback.ts",
-    "migrate:make": "deno run --allow-net --allow-read --allow-env --allow-write src/config/makeMigration.ts",
-    "seed": "deno run --allow-net --allow-read --allow-env --allow-write src/config/seed.ts"
+    "dev": "deno run --unstable-detect-cjs --watch --allow-net --allow-read --allow-env --allow-write --allow-ffi src/main.ts",
+    "start": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/main.ts",
+    "migrate:latest": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/migrate.ts",
+    "migrate:rollback": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/rollback.ts",
+    "migrate:make": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/makeMigration.ts",
+    "seed": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/seed.ts"
   },
   "imports": {
     "@hono/hono": "npm:hono@^4.0.0",
@@ -18,7 +19,6 @@
     "zod": "npm:zod@^3.22.4"
   },
   "compilerOptions": {
-    "allowJs": true,
     "lib": ["deno.window"],
     "strict": true
   },
