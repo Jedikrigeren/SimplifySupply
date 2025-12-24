@@ -7,9 +7,12 @@ const app = new Hono();
 
 // CORS middleware
 const allowedOrigins = Deno.env.get('ALLOWED_ORIGINS')?.split(',') || ['http://localhost:8081'];
+const isDevelopment = Deno.env.get('NODE_ENV') !== 'production';
 app.use('/*', cors({
-  origin: allowedOrigins,
+  origin: isDevelopment ? '*' : allowedOrigins,
   credentials: true,
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Basic logging middleware
@@ -56,9 +59,10 @@ app.onError((err, c) => {
 });
 
 const PORT = parseInt(Deno.env.get('PORT') || '3000');
+const HOST = '0.0.0.0'; // Listen on all network interfaces
 
-console.log(`🚀 Server starting on port ${PORT}...`);
+console.log(`🚀 Server starting on ${HOST}:${PORT}...`);
 console.log(`📝 Environment: ${Deno.env.get('NODE_ENV') || 'development'}`);
 
 // Start server
-Deno.serve({ port: PORT }, app.fetch);
+Deno.serve({ port: PORT, hostname: HOST }, app.fetch);

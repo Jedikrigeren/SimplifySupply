@@ -292,7 +292,7 @@ authRoutes.get('/me', authMiddleware, async (c) => {
  * GET /api/auth/verify
  * Verify if the current token is valid
  */
-authRoutes.get('/verify', authMiddleware, async (c) => {
+authRoutes.get('/verify', authMiddleware, (c) => {
   const user = c.get('user');
   
   return c.json({

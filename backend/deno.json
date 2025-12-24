@@ -6,7 +6,7 @@
     "migrate:latest": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/migrate.ts",
     "migrate:rollback": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/rollback.ts",
     "migrate:make": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/makeMigration.ts",
-    "seed": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write src/config/seed.ts"
+    "seed": "deno run --unstable-detect-cjs --allow-net --allow-read --allow-env --allow-write --allow-ffi src/config/seed.ts"
   },
   "imports": {
     "@hono/hono": "npm:hono@^4.0.0",
