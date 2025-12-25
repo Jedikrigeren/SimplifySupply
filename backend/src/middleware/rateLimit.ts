@@ -33,6 +33,13 @@ export function rateLimitMiddleware(options: RateLimitOptions) {
   const { windowMs, maxRequests, message } = options;
 
   return async (c: Context, next: Next) => {
+    // Skip rate limiting in development
+    const isDevelopment = Deno.env.get('NODE_ENV') !== 'production';
+    if (isDevelopment) {
+      await next();
+      return;
+    }
+
     // Get client identifier (IP address + user agent for better uniqueness)
     const clientIP = c.req.header('x-forwarded-for') || 
                      c.req.header('x-real-ip') || 

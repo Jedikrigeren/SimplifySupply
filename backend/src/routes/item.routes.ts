@@ -1,7 +1,7 @@
 import { Hono } from '@hono/hono';
 import { getMasterItemService } from '../sap/index.ts';
 
-export const itemRoutes = new Hono();
+export const  itemRoutes = new Hono();
 
 /**
  * GET /api/items

@@ -135,9 +135,10 @@ export interface SAPBatchInStock {
 // ========================================
 
 export interface SAPUoMGroupDefinition {
-  AlternateUoM?: string;
+  AlternateUoM?: number; // UoM Entry number (1=PCS, 2=CASE, 3=PALLET)
   AlternateQuantity?: number;
   BaseQuantity?: number;
+  Active?: string; // 'tYES' or 'tNO'
 }
 
 export interface SAPUnitOfMeasurementGroup {

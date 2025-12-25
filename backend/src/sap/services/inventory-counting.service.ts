@@ -47,7 +47,18 @@ export class InventoryCountingService {
 
     // Find the conversion definition
     const definition = uomGroup.UoMGroupDefinitionCollection.find(
-      def => def.AlternateUoM === sourceUoM
+      def => {
+        // AlternateUoM is a number (UoM entry), so we need to map source UoM name to entry
+        // -1 = Manual, 1 = PCS, 2 = CASE, 3 = PALLET
+        const mapping: Record<string, number> = {
+          'Manual': -1,
+          'PCS': 1,
+          'CASE': 2,
+          'PALLET': 3,
+        };
+        const sourceUoMEntry = mapping[sourceUoM];
+        return def.AlternateUoM === sourceUoMEntry;
+      }
     );
 
     if (!definition || !definition.BaseQuantity || !definition.AlternateQuantity) {

@@ -1,13 +1,29 @@
 import type {
-    MasterItemBarCode,
-    MasterItemBatch,
-    MasterItemType,
-    SAPBatchInStock,
-    SAPItem,
-    SAPItemWarehouseInfo,
-    SAPUnitOfMeasurementGroup,
-    SAPUoMGroupDefinition,
+  MasterItemBarCode,
+  MasterItemBatch,
+  MasterItemType,
+  SAPBatchInStock,
+  SAPItem,
+  SAPItemWarehouseInfo,
+  SAPUnitOfMeasurementGroup,
+  SAPUoMGroupDefinition,
 } from '../types.ts';
+
+/**
+ * Map UoMEntry to UoM name
+ */
+function getUoMName(uomEntry: number | undefined): string {
+  if (!uomEntry) return 'PCS';
+  
+  const mapping: Record<number, string> = {
+    '-1': 'Manual',
+    '1': 'PCS',
+    '2': 'CASE',
+    '3': 'PALLET',
+  };
+  
+  return mapping[uomEntry] || `UoM${uomEntry}`;
+}
 
 /**
  * Service to map and combine SAP data into MasterItemType
@@ -65,24 +81,27 @@ export class MasterItemMapperService {
         let quantityInStock = stockInInventoryUoM; // Default to inventory UoM stock
         
         if (bc.UoMEntry && uomGroup?.UoMGroupDefinitionCollection) {
-          // Find the UoM definition that matches this barcode's UoM entry
+          // Find the UoM definition where AlternateUoM matches the barcode's UoMEntry
           uomDef = uomGroup.UoMGroupDefinitionCollection.find(
-            def => def.AlternateUoM // For now, matching alternate UoM
+            def => def.AlternateUoM === bc.UoMEntry
           );
           
           // Calculate stock in this UoM
           if (uomDef && uomDef.BaseQuantity && uomDef.AlternateQuantity) {
-            // Example: BaseQuantity=12, AlternateQuantity=1 means "12 Pcs per 1 Case"
-            // If stock is 144 Pcs, then in Cases = 144 / 12 = 12
+            // Example: BaseQuantity=75, AlternateQuantity=1 means "75 base units per 1 alternate unit"
+            // If stock is 150 base units, then in alternate units = 150 / (75/1) = 2
             quantityInStock = stockInInventoryUoM / (uomDef.BaseQuantity / uomDef.AlternateQuantity);
           }
         }
         
+        // Map UoMEntry to name (e.g., 2 -> "CASE")
+        const uomName = getUoMName(bc.UoMEntry);
+        
         barCodeCollection.push({
           barCode: bc.Barcode,
-          uomType: uomDef?.AlternateUoM || baseUoM,
+          uomType: uomName,
           uomEntry: bc.UoMEntry,
-          alternateUoM: uomDef?.AlternateUoM,
+          alternateUoM: uomDef?.AlternateUoM ? getUoMName(uomDef.AlternateUoM) : undefined,
           alternateQuantity: uomDef?.AlternateQuantity,
           baseQuantity: uomDef?.BaseQuantity,
           quantityInStock: Math.floor(quantityInStock), // Round down
