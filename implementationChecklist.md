@@ -217,17 +217,18 @@
 ## What's Next: Counting Session Implementation
 
 ### Backend Tasks:
-- [ ] Create counting_sessions table
+- [x] Create counting_sessions table
   - id, user_id, warehouse_code, status (active/paused/completed/submitted)
   - started_at, paused_at, completed_at, submitted_at
   - session_reference (for SAP submission tracking)
-- [ ] Create counted_items table
+  - sap_doc_entry, sap_doc_num (for tracking posted documents)
+- [x] Create counted_items table
   - id, session_id, item_code, counted_quantity, counted_uom
   - counted_at, warehouse_code
-- [ ] Create counted_batches table (for batch-managed items)
+- [x] Create counted_batches table (for batch-managed items)
   - id, counted_item_id, batch_number, counted_quantity
-- [ ] Create CountingSession model
-- [ ] Create counting session API endpoints
+- [x] Create CountingSession model
+- [x] Create counting session API endpoints
   - POST /api/counting-sessions - create new session
   - GET /api/counting-sessions - list user's sessions
   - GET /api/counting-sessions/:id - get session details

@@ -2,7 +2,8 @@ import { cors } from '@hono/cors';
 import { Hono } from '@hono/hono';
 import 'dotenv/config';
 import { authRoutes } from './routes/auth.routes.ts';
-import { sapRoutes } from './routes/sap.routes.ts';
+import { countingRoutes } from './routes/counting.routes.ts';
+import { itemRoutes } from './routes/item.routes.ts';
 import { initializeSAPCache } from './sap/init.ts';
 
 const app = new Hono();
@@ -24,7 +25,8 @@ app.get('/health', (c) => {
 
 // Mount routes
 app.route('/api/auth', authRoutes);
-app.route('/api/sap', sapRoutes);
+app.route('/api/items', itemRoutes);
+app.route('/api/counting-sessions', countingRoutes);
 
 // API routes will be added here
 app.get('/api', (c) => {
@@ -34,7 +36,8 @@ app.get('/api', (c) => {
     endpoints: {
       health: '/health',
       auth: '/api/auth/*',
-      sap: '/api/sap/*',
+      items: '/api/items/*',
+      counting: '/api/counting-sessions/*',
     },
   });
 });
