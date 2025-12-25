@@ -61,16 +61,28 @@
 - [x] Add CORS configuration for React Native app
 
 ### 5. SAP Service Layer Integration
-- [ ] Create SAP service layer client
-- [ ] Implement SAP session management (service account)
-- [ ] Create SAP login function with credentials from env
-- [ ] Implement SAP session token refresh logic
-- [ ] Create SAP API proxy endpoints
-  - `/api/sap/items/:barcode` - get item by barcode
-  - `/api/sap/items/search` - search items
-  - `/api/sap/inventory/submit` - submit inventory count
-- [ ] Add authentication middleware to SAP endpoints
-- [ ] Implement request/response caching for SAP data
+- [x] Create SAP service layer client
+- [x] Implement SAP session management (service account)
+- [x] Create SAP login function with credentials from env
+- [x] Implement SAP session token refresh logic
+- [x] Create SAP API proxy endpoints
+  - [x] `/api/sap/master-items` - get all items with full details (cached)
+  - [x] `/api/sap/master-items/:itemCode` - get specific item
+  - [x] `/api/sap/master-items/barcode/:barcode` - get item by barcode
+  - [x] `/api/sap/master-items/search?q=query` - search items
+  - [x] `/api/sap/inventory-counting/prepare` - validate inventory posting
+  - [x] `/api/sap/inventory-counting/post` - submit inventory count
+  - [x] `/api/sap/cache/status` - get cache status
+  - [x] `/api/sap/cache/refresh` - trigger cache refresh
+- [x] Add authentication middleware to SAP endpoints
+- [x] Implement multi-layer caching for SAP data
+  - [x] Items cache (24h refresh)
+  - [x] UoM Groups cache (24h refresh)
+  - [x] Batches cache (1h refresh per warehouse)
+  - [x] Master Items cache (auto-rebuilds on dependency updates)
+- [x] Implement batch management support
+- [x] Implement UoM conversion logic
+- [x] Implement inventory posting with batch differences
 
 ### 6. Security & Middleware
 - [x] Implement rate limiting (auth endpoints: 5 req/15 min)
@@ -88,10 +100,9 @@
 - [x] Test login flow with invalid credentials
 - [x] Test JWT token validation
 - [x] Test protected endpoints without token
-- [ ] Test SAP connection and proxy endpoints - not implemented yet
+- [x] Test SAP connection and cache system
 - [x] Create Postman/Thunder Client collection for API testing (test-api.sh script)
-- [ ] Test SAP connection and proxy endpoints - not implemented yet
-- [x] Create Postman/Thunder Client collection for API testing (test-api.sh script)
+- [ ] Test inventory posting flow end-to-end
 
 ### 8. Deployment Preparation
 - [x] Create Docker configuration (docker-compose.yml for PostgreSQL)
@@ -195,8 +206,52 @@
 **US-001 (User Login):** ✅ Complete
 **US-002 (User Profile):** ✅ Complete  
 **US-003 (Session Management):** ✅ Complete
+**SAP Integration:** ✅ Complete
+- Multi-layer caching system with independent refresh intervals
+- Master item service with UoM conversion
+- Batch management support
+- Inventory counting and posting service
 
-All authentication and user management features have been implemented and tested in Expo Go. The backend provides secure JWT-based authentication with token refresh, rate limiting, and proper session management. The frontend includes login, registration, profile display, and automatic token refresh with offline detection.
+---
+
+## What's Next: Counting Session Implementation
+
+### Backend Tasks:
+- [ ] Create counting_sessions table
+  - id, user_id, warehouse_code, status (active/paused/completed/submitted)
+  - started_at, paused_at, completed_at, submitted_at
+  - session_reference (for SAP submission tracking)
+- [ ] Create counted_items table
+  - id, session_id, item_code, counted_quantity, counted_uom
+  - counted_at, warehouse_code
+- [ ] Create counted_batches table (for batch-managed items)
+  - id, counted_item_id, batch_number, counted_quantity
+- [ ] Create CountingSession model
+- [ ] Create counting session API endpoints
+  - POST /api/counting-sessions - create new session
+  - GET /api/counting-sessions - list user's sessions
+  - GET /api/counting-sessions/:id - get session details
+  - PATCH /api/counting-sessions/:id - update status (pause/resume)
+  - DELETE /api/counting-sessions/:id - delete session
+  - POST /api/counting-sessions/:id/items - add counted item
+  - PUT /api/counting-sessions/:id/items/:itemId - update counted item
+  - DELETE /api/counting-sessions/:id/items/:itemId - remove counted item
+  - POST /api/counting-sessions/:id/submit - submit to SAP
+
+### Frontend Tasks:
+- [ ] Create CountingSessionContext
+- [ ] Create session management screens
+  - [ ] Start/resume session screen
+  - [ ] Active session overview
+  - [ ] Session history
+- [ ] Implement barcode scanner (expo-camera + expo-barcode-scanner)
+- [ ] Create item counting UI
+  - [ ] Scanned item display
+  - [ ] Quantity input with quick buttons (+1, +5, +10)
+  - [ ] Batch selection (for batch-managed items)
+  - [ ] Item list in current session
+- [ ] Implement offline data persistence (AsyncStorage or SQLite)
+- [ ] Create submission flow with validation
 
 ---
 

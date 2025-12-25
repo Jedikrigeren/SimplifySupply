@@ -2,6 +2,8 @@ import { cors } from '@hono/cors';
 import { Hono } from '@hono/hono';
 import 'dotenv/config';
 import { authRoutes } from './routes/auth.routes.ts';
+import { sapRoutes } from './routes/sap.routes.ts';
+import { initializeSAPCache } from './sap/init.ts';
 
 const app = new Hono();
 
@@ -15,21 +17,14 @@ app.use('/*', cors({
   allowHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Basic logging middleware
-app.use('/*', async (c, next) => {
-  const start = Date.now();
-  await next();
-  const ms = Date.now() - start;
-  console.log(`${c.req.method} ${c.req.path} - ${c.res.status} (${ms}ms)`);
-});
-
 // Health check endpoint
 app.get('/health', (c) => {
   return c.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Mount auth routes
+// Mount routes
 app.route('/api/auth', authRoutes);
+app.route('/api/sap', sapRoutes);
 
 // API routes will be added here
 app.get('/api', (c) => {
@@ -61,8 +56,14 @@ app.onError((err, c) => {
 const PORT = parseInt(Deno.env.get('PORT') || '3000');
 const HOST = '0.0.0.0'; // Listen on all network interfaces
 
-console.log(`🚀 Server starting on ${HOST}:${PORT}...`);
-console.log(`📝 Environment: ${Deno.env.get('NODE_ENV') || 'development'}`);
+// Initialize SAP cache (runs in background)
+// Default warehouse code can be configured via env variable
+const defaultWarehouse = Deno.env.get('SAP_DEFAULT_WAREHOUSE') || '01';
+try {
+  initializeSAPCache(defaultWarehouse);
+} catch (err) {
+  console.error('SAP cache initialization error:', err);
+}
 
 // Start server
 Deno.serve({ port: PORT, hostname: HOST }, app.fetch);
