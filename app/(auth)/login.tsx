@@ -35,7 +35,8 @@ export default function LoginScreen() {
 
     try {
       await login({ username: username.trim(), password });
-      // Navigation will be handled by root layout
+      // Force navigation after successful login
+      router.replace('/(tabs)');
     } catch (err: any) {
       // Handle error
       if (__DEV__) {

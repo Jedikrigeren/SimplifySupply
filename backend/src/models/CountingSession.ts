@@ -23,6 +23,7 @@ export interface CountedItem {
   counted_quantity: number;
   counted_uom: string;
   warehouse_code: string;
+  location?: string;
   counted_at: Date;
   created_at: Date;
   updated_at: Date;
@@ -154,7 +155,8 @@ export class CountingSessionModel {
     itemCode: string,
     countedQuantity: number,
     countedUom: string,
-    warehouseCode: string
+    warehouseCode: string,
+    location?: string
   ): Promise<CountedItem> {
     const [item] = await db('counted_items')
       .insert({
@@ -163,6 +165,7 @@ export class CountingSessionModel {
         counted_quantity: countedQuantity,
         counted_uom: countedUom,
         warehouse_code: warehouseCode,
+        location: location || null,
       })
       .returning('*');
     return item;

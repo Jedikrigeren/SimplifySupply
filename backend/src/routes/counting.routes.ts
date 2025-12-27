@@ -192,7 +192,7 @@ countingRoutes.post('/:id/items', async (c: Context) => {
     const sessionId = c.req.param('id');
     const userId = c.get('user').userId;
     const body = await c.req.json();
-    const { itemCode, countedQuantity, countedUom, batches } = body;
+    const { itemCode, countedQuantity, countedUom, location, batches } = body;
 
     if (!itemCode || !countedQuantity || !countedUom) {
       return c.json({
@@ -224,7 +224,8 @@ countingRoutes.post('/:id/items', async (c: Context) => {
       itemCode,
       countedQuantity,
       countedUom,
-      session.warehouse_code
+      session.warehouse_code,
+      location
     );
 
     // Add batches if provided

@@ -240,19 +240,19 @@
   - POST /api/counting-sessions/:id/submit - submit to SAP
 
 ### Frontend Tasks:
-- [ ] Create CountingSessionContext
-- [ ] Create session management screens
-  - [ ] Start/resume session screen
-  - [ ] Active session overview
-  - [ ] Session history
+- [x] Create CountingSessionContext
+- [x] Create session management screens
+  - [x] Start/resume session screen
+  - [x] Active session overview
+  - [x] Session history
 - [ ] Implement barcode scanner (expo-camera + expo-barcode-scanner)
-- [ ] Create item counting UI
-  - [ ] Scanned item display
-  - [ ] Quantity input with quick buttons (+1, +5, +10)
+- [x] Create item counting UI
+  - [x] Scanned item display
+  - [x] Quantity input with quick buttons (+1, +5, +10)
   - [ ] Batch selection (for batch-managed items)
-  - [ ] Item list in current session
+  - [x] Item list in current session
 - [ ] Implement offline data persistence (AsyncStorage or SQLite)
-- [ ] Create submission flow with validation
+- [x] Create submission flow with validation
 
 ---
 

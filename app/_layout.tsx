@@ -8,6 +8,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import { OfflineBanner } from '@/components/offline-banner';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { CountingSessionProvider } from '@/context/CountingSessionContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const unstable_settings = {
@@ -64,7 +65,9 @@ const styles = StyleSheet.create({
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <CountingSessionProvider>
+        <RootLayoutNav />
+      </CountingSessionProvider>
     </AuthProvider>
   );
 }
