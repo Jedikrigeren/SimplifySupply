@@ -1,7 +1,7 @@
 import ActionButtons from '@/components/counting-session/ActionButtons';
 import CountedItemCard from '@/components/counting-session/CountedItemCard';
 import ItemConfirmationModal from '@/components/counting-session/ItemConfirmationModal';
-import ManualEntryModal from '@/components/counting-session/ManualEntryModal';
+import ItemSearchModal from '@/components/counting-session/ItemSearchModal';
 import ScannerModal from '@/components/counting-session/ScannerModal';
 import SessionHeader from '@/components/counting-session/SessionHeader';
 import SubmitDialog from '@/components/counting-session/SubmitDialog';
@@ -39,7 +39,7 @@ export default function ActiveSessionScreen() {
   const [countedBy, setCountedBy] = useState('');
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
-  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [showItemSearch, setShowItemSearch] = useState(false);
   const [showItemConfirmation, setShowItemConfirmation] = useState(false);
   const [scannedItem, setScannedItem] = useState<MasterItem | null>(null);
   const [scannedBarcode, setScannedBarcode] = useState<string>('');
@@ -58,22 +58,7 @@ export default function ActiveSessionScreen() {
     );
   }
 
-  const handleAddItem = async () => {
-    if (!itemCode.trim() || !quantity.trim() || !uom.trim()) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
 
-    try {
-      await addItem(itemCode.trim(), parseFloat(quantity), uom.trim(), location.trim() || undefined);
-      setItemCode('');
-      setQuantity('1');
-      setLocation('');
-      Alert.alert('Success', 'Item added to session');
-    } catch (err) {
-      Alert.alert('Error', 'Failed to add item');
-    }
-  };
 
   const handleOpenScanner = async () => {
     if (!permission?.granted) {
@@ -105,11 +90,26 @@ export default function ActiveSessionScreen() {
       setItemCode(item.itemCode);
       // Use the UOM from the barcode, or fall back to inventory UOM
       setUom(barcodeEntry?.uomType || item.inventoryUoM);
+      setQuantity('1');
       setShowItemConfirmation(true);
     } catch (error) {
       console.error('Error fetching item:', error);
       Alert.alert('Error', 'Failed to fetch item details');
     }
+  };
+
+  const handleItemFound = (item: MasterItem) => {
+    // Close search modal
+    setShowItemSearch(false);
+    
+    // Set up item for confirmation - no barcode since it's manual entry
+    setScannedBarcode('');
+    setScannedItem(item);
+    setItemCode(item.itemCode);
+    // Default to inventory UOM, user will select from available UOMs
+    setUom(item.inventoryUoM);
+    setQuantity('1');
+    setShowItemConfirmation(true);
   };
 
   const handleConfirmItem = async () => {
@@ -185,15 +185,7 @@ export default function ActiveSessionScreen() {
     }
   };
 
-  const handleQuickAdd = (amount: number) => {
-    const currentQty = parseFloat(quantity) || 0;
-    setQuantity((currentQty + amount).toString());
-  };
 
-  const handleManualSubmit = async () => {
-    await handleAddItem();
-    setShowManualEntry(false);
-  };
 
   return (
     <View style={styles.container}>
@@ -205,7 +197,7 @@ export default function ActiveSessionScreen() {
       {currentSession.status === 'active' && (
         <ActionButtons
           onScanPress={handleOpenScanner}
-          onManualPress={() => setShowManualEntry(true)}
+          onManualPress={() => setShowItemSearch(true)}
         />
       )}
 
@@ -255,6 +247,13 @@ export default function ActiveSessionScreen() {
         onBarcodeScanned={handleBarcodeScanned}
       />
 
+      <ItemSearchModal
+        visible={showItemSearch}
+        warehouseCode={currentSession.warehouse_code}
+        onItemFound={handleItemFound}
+        onCancel={() => setShowItemSearch(false)}
+      />
+
       <ItemConfirmationModal
         visible={showItemConfirmation}
         item={scannedItem}
@@ -268,22 +267,6 @@ export default function ActiveSessionScreen() {
         onLocationChange={setLocation}
         onConfirm={handleConfirmItem}
         onCancel={handleCancelConfirmation}
-      />
-
-      <ManualEntryModal
-        visible={showManualEntry}
-        itemCode={itemCode}
-        quantity={quantity}
-        uom={uom}
-        location={location}
-        isLoading={isLoading}
-        onItemCodeChange={setItemCode}
-        onQuantityChange={setQuantity}
-        onUomChange={setUom}
-        onLocationChange={setLocation}
-        onQuickAdd={handleQuickAdd}
-        onSubmit={handleManualSubmit}
-        onCancel={() => setShowManualEntry(false)}
       />
 
       <SubmitDialog

@@ -136,9 +136,29 @@ export default function ItemConfirmationModal({
           <View style={styles.uomRow}>
             <View style={styles.uomSection}>
               <Text style={styles.label}>UoM</Text>
-              <View style={styles.uomDisplay}>
-                <Text style={styles.uomDisplayText}>{uom}</Text>
-              </View>
+              {scannedBarcode ? (
+                // If scanned via barcode, show the UOM (locked)
+                <View style={styles.uomDisplay}>
+                  <Text style={styles.uomDisplayText}>{uom}</Text>
+                </View>
+              ) : (
+                // If manual entry, allow UOM selection from available barcodes
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.uomScroll}>
+                  <View style={styles.uomButtons}>
+                    {item.barCodeCollection.map((bc) => (
+                      <Pressable
+                        key={bc.uomType}
+                        style={[styles.uomButton, uom === bc.uomType && styles.uomButtonActive]}
+                        onPress={() => onUomChange(bc.uomType)}
+                      >
+                        <Text style={[styles.uomButtonText, uom === bc.uomType && styles.uomButtonTextActive]}>
+                          {bc.uomType}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </ScrollView>
+              )}
             </View>
             {selectedBarcode && selectedBarcode.baseQuantity && selectedBarcode.alternateQuantity && (
               <View style={styles.conversionSection}>
@@ -303,6 +323,35 @@ const styles = StyleSheet.create({
   },
   uomSection: {
     flex: 1,
+  },
+  uomScroll: {
+    maxHeight: 50,
+  },
+  uomButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  uomButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#d1d5db',
+    backgroundColor: '#fff',
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  uomButtonActive: {
+    borderColor: '#3b82f6',
+    backgroundColor: '#dbeafe',
+  },
+  uomButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6b7280',
+  },
+  uomButtonTextActive: {
+    color: '#1e40af',
   },
   uomDisplay: {
     borderWidth: 1,
