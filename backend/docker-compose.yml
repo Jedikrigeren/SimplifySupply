@@ -4,8 +4,8 @@ services:
     container_name: simplify_supply_postgres
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: test
+      POSTGRES_USER: testUser
+      POSTGRES_PASSWORD: testPassword
       POSTGRES_DB: simplify_supply
     ports:
       - "5432:5432"
@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d simplify_supply"]
+      test: ["CMD-SHELL", "pg_isready -U testUser -d simplify_supply"]
       interval: 10s
       timeout: 5s
       retries: 5

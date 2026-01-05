@@ -6,12 +6,29 @@
     "configurations": [
         {
             "request": "launch",
-            "name": "Launch Backend",
+            "name": "Backend",
             "type": "node",
             "program": "${workspaceFolder}/backend/src/main.ts",
             "cwd": "${workspaceFolder}/backend",
             "env": {},
-            "runtimeExecutable": "/home/jedikrigeren/.deno/bin/deno",
+            "runtimeExecutable": "C:\\Users\\Hasse\\scoop\\shims\\deno.EXE",
+            "runtimeArgs": [
+                "run",
+                "--unstable",
+                "--unstable-detect-cjs",
+                "--inspect-wait",
+                "--allow-all"
+            ],
+            "attachSimplePort": 9229
+        },
+        {
+            "request": "launch",
+            "name": "Migrate",
+            "type": "node",
+            "program": "${workspaceFolder}/backend/src/config/migrate.ts",
+            "cwd": "${workspaceFolder}/backend",
+            "env": {},
+           "runtimeExecutable": "C:\\Users\\Hasse\\scoop\\shims\\deno.EXE",
             "runtimeArgs": [
                 "run",
                 "--unstable",
